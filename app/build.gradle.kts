@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.gson)
     implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
     kapt(libs.hiltk)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
