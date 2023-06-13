@@ -4,8 +4,9 @@ import com.example.nyt.core.network.ApiClient
 import com.example.nyt.core.network.handleApi
 import com.example.nyt.feature.mostPopular.data.remote.api.MostPopularApi
 import com.example.nyt.feature.mostPopular.data.remote.data.response.MostPopularResponse
+import javax.inject.Inject
 
-class RemoteMostPopularImpl: RemoteMostPopular {
+class RemoteMostPopularImpl @Inject constructor(): RemoteMostPopular {
 
     private val api: MostPopularApi = ApiClient.createService()
 

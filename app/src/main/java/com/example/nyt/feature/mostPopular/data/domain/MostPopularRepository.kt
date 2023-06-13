@@ -4,5 +4,5 @@ import com.example.nyt.feature.mostPopular.data.remote.data.response.MostPopular
 import kotlinx.coroutines.flow.Flow
 
 interface MostPopularRepository {
-    fun get(type: Int): Flow<Result<MostPopularResponse>>
+    fun get(type: Int): Flow<Result<List<MostPopularResponse.Result>>>
 }
