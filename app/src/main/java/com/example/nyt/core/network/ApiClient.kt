@@ -1,5 +1,6 @@
 package com.example.nyt.core.network
 
+import com.example.nyt.BuildConfig
 import com.google.gson.GsonBuilder
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
@@ -11,14 +12,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
 object ApiClient {
-    private const val baseUrl = "https://api.nytimes.com"
-    private const val apikey = "XSaGklVBZVeMhL9oVk7fFVbFAYU01TeV"
-
     private val clientInterceptor: Interceptor = Interceptor { chain ->
         val request = chain.request().run {
             newBuilder().url(
                 url.newBuilder()
-                    .addQueryParameter("api-key", apikey)
+                    .addQueryParameter("api-key", BuildConfig.APIKey)
                     .build()
             ).build()
         }
@@ -46,7 +44,7 @@ object ApiClient {
     val retrofit: Retrofit by lazy {
         Retrofit
             .Builder()
-            .baseUrl(baseUrl)
+            .baseUrl(BuildConfig.BaseUrl)
             .client(clientBuilder)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()

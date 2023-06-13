@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.androidApplication)
@@ -6,6 +8,8 @@ plugins {
     alias(libs.plugins.hilt)
     kotlin("kapt")
 }
+
+val APIKey: String = gradleLocalProperties(rootDir).getProperty("APIKey")
 
 android {
     namespace = "com.example.nyt"
@@ -25,12 +29,23 @@ android {
     }
 
     buildTypes {
+
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "APIKey", APIKey)
+            buildConfigField("String", "BaseUrl", "\"https://api.nytimes.com\"")
+            buildConfigField("String", "MostPopularApi", "\"/svc/mostpopular/v2/viewed/{type}.json\"")
+
+        }
+        debug {
+
+            buildConfigField("String", "APIKey", APIKey)
+            buildConfigField("String", "BaseUrl", "\"https://api.nytimes.com\"")
+            buildConfigField("String", "MostPopularApi", "\"/svc/mostpopular/v2/viewed/{type}.json\"")
         }
     }
     compileOptions {
@@ -39,9 +54,14 @@ android {
     }
     kotlinOptions {
         jvmTarget = "17"
+        // disable warring for experimental api
+        freeCompilerArgs += listOf(
+            "-opt-in=androidx.compose.material.ExperimentalMaterialApi",
+        )
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.7"
@@ -51,6 +71,15 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+}
+
+hilt {
+    enableAggregatingTask = true
+}
+
+kapt {
+    useBuildCache = false
 }
 
 dependencies {
@@ -71,6 +100,7 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
+    implementation(libs.androidx.material)
     kapt(libs.hiltk)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
