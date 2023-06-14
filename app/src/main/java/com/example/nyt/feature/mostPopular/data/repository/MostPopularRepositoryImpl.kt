@@ -1,19 +1,24 @@
 package com.example.nyt.feature.mostPopular.data.repository
 
+import com.example.nyt.core.util.CoroutineDispatchersProvider
+import com.example.nyt.core.util.DispatchersProvider
 import com.example.nyt.feature.mostPopular.data.domain.MostPopularRepository
+import com.example.nyt.feature.mostPopular.data.domain.data.MostPopular
 import com.example.nyt.feature.mostPopular.data.remote.RemoteMostPopular
-import com.example.nyt.feature.mostPopular.data.remote.data.response.MostPopularResponse
-import kotlinx.coroutines.Dispatchers
+import com.example.nyt.feature.mostPopular.data.repository.mapper.toDomain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class MostPopularRepositoryImpl @Inject constructor(private val remote: RemoteMostPopular) :
+class MostPopularRepositoryImpl @Inject constructor(
+    private val remote: RemoteMostPopular,
+    private val dispatcher: DispatchersProvider
+) :
     MostPopularRepository {
-    override fun get(type: Int): Flow<Result<List<MostPopularResponse.Result>>> = flow {
-        emit(remote.get(type).map { it.results?.filterNotNull().orEmpty() })
-    }.flowOn(Dispatchers.IO)
+    override fun get(type: Int): Flow<Result<List<MostPopular>>> = flow {
+        val response = remote.get(type)
+        val domain = response.map { it.toDomain() }
+        emit(domain)
+    }.flowOn(dispatcher.io())
 }

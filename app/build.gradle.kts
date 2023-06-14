@@ -38,14 +38,22 @@ android {
             )
             buildConfigField("String", "APIKey", APIKey)
             buildConfigField("String", "BaseUrl", "\"https://api.nytimes.com\"")
-            buildConfigField("String", "MostPopularApi", "\"/svc/mostpopular/v2/viewed/{type}.json\"")
+            buildConfigField(
+                "String",
+                "MostPopularApi",
+                "\"/svc/mostpopular/v2/viewed/{type}.json\""
+            )
 
         }
         debug {
 
             buildConfigField("String", "APIKey", APIKey)
             buildConfigField("String", "BaseUrl", "\"https://api.nytimes.com\"")
-            buildConfigField("String", "MostPopularApi", "\"/svc/mostpopular/v2/viewed/{type}.json\"")
+            buildConfigField(
+                "String",
+                "MostPopularApi",
+                "\"/svc/mostpopular/v2/viewed/{type}.json\""
+            )
         }
     }
     compileOptions {
@@ -57,6 +65,7 @@ android {
         // disable warring for experimental api
         freeCompilerArgs += listOf(
             "-opt-in=androidx.compose.material.ExperimentalMaterialApi",
+            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
         )
     }
     buildFeatures {
@@ -103,6 +112,14 @@ dependencies {
     implementation(libs.androidx.material)
     kapt(libs.hiltk)
     testImplementation(libs.junit)
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.truth)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.hilt.android.testing)
+
+    kaptTest(libs.hiltk)
+
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(platform(libs.compose.bom))
